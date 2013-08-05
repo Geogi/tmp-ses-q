@@ -249,9 +249,12 @@ ses.startSES = function(global,
 
   //////////////// END KLUDGE SWITCHES ///////////
 
-  // A problem we can work around but repairES5 cannot repair.
+  // Problems we can work around but repairES5 cannot repair.
+
   var NONCONFIGURABLE_OWN_PROTO =
       ses.es5ProblemReports.NONCONFIGURABLE_OWN_PROTO.afterFailure;
+  var INCREMENT_IGNORES_FROZEN =
+      ses.es5ProblemReports.INCREMENT_IGNORES_FROZEN.afterFailure;
 
   var dirty = true;
 
@@ -339,6 +342,10 @@ ses.startSES = function(global,
   function mitigateSrcGotchas(funcBodySrc, options) {
     var safeError;
     if ('function' === typeof ses.mitigateSrcGotchas) {
+      if (INCREMENT_IGNORES_FROZEN) {
+        options.rewritePropertyUpdateExpr = true;
+        options.rewritePropertyCompoundAssignmentExpr = true;
+      }
       try {
         return ses.mitigateSrcGotchas(funcBodySrc, options, ses.logger);
       } catch (error) {
@@ -1557,7 +1564,7 @@ ses.startSES = function(global,
           return true;
         }
       }
-    } else if ((desc2.value === void 0 || desc2.value === null) &&
+    } else if (desc2.value !== Object(desc2.value2) && // is primitive
                !desc2.writable &&
                !desc2.configurable) {
       reportProperty(ses.severities.SAFE,
