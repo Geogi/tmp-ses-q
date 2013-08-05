@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+
+<!--
+ - Copyright (C) 2011 Google Inc.
+ -
+ - Licensed under the Apache License, Version 2.0 (the "License");
+ - you may not use this file except in compliance with the License.
+ - You may obtain a copy of the License at
+ -
+ -      http://www.apache.org/licenses/LICENSE-2.0
+ -
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS,
+ - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ - See the License for the specific language governing permissions and
+ - limitations under the License.
+-->
+
+<!-- Modified for testing by Paul Blouët, 2013 (previously named explicit.html) -->
+
+<html>
+<head>
+<title>Testing SES/5</title>
+<style type="text/css">
+.log { color: black; }
+.info { color: navy; }
+.warn { color: olive; }
+.error { color: maroon; }
+.reports-text p { margin-top: 0.05em; margin-bottom: 0.05em; }
+.console-text p { margin-top: 0.05em; margin-bottom: 0.05em; }
+</style>
+</head>
+<body>
+<div id="reports" class="reports-text"><b>Repair Reports</b></div>
+<div id="console" class="console-text"><hr></div>
+<div id="exprTest">exprTest...</div>
+<div id="moduleTest">moduleTest...</div>
+<div id="scriptTest">scriptTest...</div>
+<div id="amdLoaderTest">AMD loader test...</div>
+
+<script src="useHTMLLogger.js"></script>
+<script>
+  function gebi(id) {
+    return document.getElementById(id);
+  };
+  useHTMLLogger(gebi("reports"), gebi("console"));
+  // This severity is too high for any use other than development.
+  ses.maxAcceptableSeverityName = 'NEW_SYMPTOM';
+</script>
+<!--
+The <script src=... tags below, from "logger.js" to "hookupSESPlus.js", is
+  equivalent to <script src="initSESPlus.js"></script>, but is more
+  pleasant to debug.
+
+The <script src="useHTMLLogger.js"> and the inline script above advises
+  the scripts below, overriding the default logger, and overriding the
+  default maxAcceptableSeverityName.
+-->
+<script src="logger.js"></script>
+<script src="repairES5.js"></script>
+<script src="WeakMap.js"></script>
+<script src="debug.js"></script>
+<script src="StringMap.js"></script>
+<script src="whitelist.js"></script>
+<script src="atLeastFreeVarNames.js"></script>
+<script src="startSES.js"></script>
+<script src="ejectorsGuardsTrademarks.js"></script>
+<script src="hookupSESPlus.js"></script>
+
+<script>
+    var def;
+  (function() {
+    "use strict";
+    
+    def = cajaVM.def;
+  })();
+</script>
+
+<script src="makeQ.js"></script>
+<script src="makeFarResourceMaker.js"></script>
+<script src="compileExprLater.js"></script>
+<script>
+  var Q;
+  (function() {
+    "use strict";
+
+    if (!ses.ok()) { return; }
+
+    /* TODO(erights): Extract the reusable boilerplate below into a
+       reusable abstraction. */
+
+    function mySetTimeout(func, millis) {
+      return setTimeout(function() {
+        try {
+          func();
+        } catch (reason) {
+          ses.logger.log('uncaught: ', reason);
+          throw reason;
+        }
+      }, millis);
+    }
+    Q = ses.makeQ(mySetTimeout);
+
+    var makeTextResource = ses.makeFarResourceMaker();
+  })();
+</script>
+<script src="bank.js"></script>
+<script src="alice.js"></script>
+<script src="bob.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
