@@ -13,7 +13,6 @@ var Alice = function (bankP, bobP) {
         var ackP = paymentP.then(function (purse) {
             console.log("Alice has her payment purse, trying to deposit the amount.");
             purse.deposit(price, myPurseP);
-            console.log(purse.getBalance())
             return purse;
         });
         var goodP = ackP.then(function (purse) {
