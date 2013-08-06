@@ -3,9 +3,9 @@ var bankP = Q.defer();
 var bobP = Q.defer();
 
 // Actors
-var bank = new Bank();
-var alice = new Alice(bankP.promise, bobP.promise);
-var bob = new Bob(bankP.promise);
+var bank = Bank();
+var alice = Alice(bankP.promise, bobP.promise);
+var bob = Bob(bankP.promise);
 console.log("Actors bank, alice and bob created.");
 
 // Fulfill

@@ -24,15 +24,21 @@ var Bank = function () {
         return mint;
     };
     
-    // bank dollar funds (needs to be >= 100, e.g. 2000)
-    var dollarMint = makeMint(2000);
+    // bank dollar mint
+    var dollarMint = makeMint();
     
     // agreed opening of alice's and bob's purses
-    var openAlice = function () { return dollarMint.mint(100); };
-    var openBob = function () { return dollarMint.mint(0); };
+    var openAlice = function () { 
+        console.log("Give Alice her main purse.");
+        return dollarMint(100);
+    };
+    var openBob = function () {
+        console.log("Give Bob his main purse.")
+        return dollarMint(0);
+    };
     
-    return def({
+    return {
         openAlice: openAlice,
         openBob: openBob
-    });
+    };
 };
